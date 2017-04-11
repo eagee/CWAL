@@ -23,10 +23,10 @@ public class WaveMotionScript : MonoBehaviour {
         this.transform.position = pos;
 
         counter += Time.deltaTime;
-        if(counter > 7f)
+        if(counter > 5f)
         {
             counter = 0.0f;
-            Speed = -Speed;
+            //Speed = -Speed;
         }
 
     }

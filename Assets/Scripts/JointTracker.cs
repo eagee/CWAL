@@ -36,13 +36,21 @@ public class JointTracker : MonoBehaviour {
 
         if((data.Length >= BodyNumber) && (data[BodyNumber] != null) && (data[BodyNumber].IsTracked))
         {
+            GetComponent<Rigidbody>().isKinematic = true;
             var pos = data[BodyNumber].Joints[JointToUse].Position;
             float yPosition = (pos.Y * scale) + (yOffset + (m_trackerDot.transform.position.y - m_trackerStartingY));
-            this.gameObject.transform.position = new Vector3(pos.X * scale, yPosition, 0f);
+            Vector3 targetPosition = new Vector3(pos.X * scale, yPosition, 0f);
+            this.transform.position = Vector3.MoveTowards(this.transform.position, targetPosition, Time.deltaTime * 10);
+            //this.transform.position = targetPosition;
+
+            // Try moving to target vector with physics
+            // Vector3 dir = (targetPosition - transform.position).normalized * 5f;
+            // this.GetComponent<Rigidbody>().velocity = dir;
         }
         else
         {
-            this.gameObject.transform.position = new Vector3(-30f, 0f, 0f);
+            GetComponent<Rigidbody>().isKinematic = false;
+            //this.gameObject.transform.position = new Vector3(-30f, 0f, 0f);
         }
 
     }
