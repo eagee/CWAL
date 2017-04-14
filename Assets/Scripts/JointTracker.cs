@@ -10,7 +10,6 @@ public class JointTracker : MonoBehaviour {
     public float scale = 8f;
     public float yOffset = -5f;
     public int BodyNumber = 0;
-    public GameObject PointToward;
 
     private TrackerDot m_trackerDot;
     private float m_trackerStartingY;
@@ -40,21 +39,30 @@ public class JointTracker : MonoBehaviour {
         {
             if ((body != null) && (body.IsTracked))
             {
+                GetComponent<Rigidbody>().isKinematic = true;
                 var pos = body.Joints[JointToUse].Position;
-                //float yPosition = (pos.Y * scale) + (yOffset + (m_trackerDot.transform.position.y - m_trackerStartingY));
-                Vector3 targetPosition = new Vector3(pos.X * scale, yOffset + pos.Y * scale, 0f);
+                float yPosition = (pos.Y * scale) + (yOffset + (m_trackerDot.transform.position.y - m_trackerStartingY));
+                Vector3 targetPosition = new Vector3(pos.X * scale, yOffset + pos.Y * scale, pos.Z);
                 //this.transform.position = Vector3.MoveTowards(this.transform.position, targetPosition, Time.deltaTime * 10);
                 this.transform.position = targetPosition;
-                Quaternion rotation;
-                rotation.x = body.JointOrientations[JointToUse].Orientation.X;
-                rotation.y = body.JointOrientations[JointToUse].Orientation.Y;
-                rotation.z = body.JointOrientations[JointToUse].Orientation.Z;
-                rotation.w = body.JointOrientations[JointToUse].Orientation.W;
-                Vector3 eulerRotation = rotation.eulerAngles;
-                Vector3 limitedRotation = new Vector3(0f, 0f, -eulerRotation.z);
-                transform.rotation = Quaternion.Euler(limitedRotation);
-                //var rotation = Quaternion.LookRotation(lookPos);
-                //transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * damping);
+                
+                //Quaternion rotation;
+                //rotation.x = body.JointOrientations[JointToUse].Orientation.X;
+                //rotation.y = body.JointOrientations[JointToUse].Orientation.Y;
+                //rotation.z = body.JointOrientations[JointToUse].Orientation.Z;
+                //rotation.w = body.JointOrientations[JointToUse].Orientation.W;
+                //transform.rotation = rotation;
+
+                //Vector3 eulerRotation = rotation.eulerAngles;
+                //Vector3 limitedRotation = new Vector3(0f, 0f, -eulerRotation.z);
+                //transform.rotation = Quaternion.Euler(limitedRotation);
+                ///if(PointToward != null)
+                ///{
+                ///    var targetPoint = new Vector3(PointToward.transform.position.x, PointToward.transform.position.y, transform.position.z) - transform.position;
+                ///    var targetRotation = Quaternion.LookRotation(new Vector3(0f, 0f, -targetPoint.z), Vector3.up);
+                ///    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 2.0f);
+                ///}
+
             }
         }
 
