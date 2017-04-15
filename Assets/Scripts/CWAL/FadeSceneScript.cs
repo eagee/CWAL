@@ -38,7 +38,7 @@ public class FadeSceneScript : MonoBehaviour {
         if (dot == null)
         {
             m_FadeOutTimer += Time.deltaTime;
-            if (m_FadeOutTimer > 10f)
+            if (m_FadeOutTimer > 1f)
             {
                 m_FadeIn = false;
                 m_Active = true;

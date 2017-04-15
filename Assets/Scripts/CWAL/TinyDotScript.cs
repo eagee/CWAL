@@ -15,8 +15,10 @@ public class TinyDotScript : MonoBehaviour {
     private float lifeUsed = 0.0f;
     private float lifeAllowed = 40.0f;
     private float m_waterLevelOffset = 0f;
-
+    private float m_bringToLifeCounter = 0f;
+    private bool m_bringToLifeTriggered = false;
     private EventTimer m_eventTimer;
+
 
     void setupDot()
     {
@@ -30,10 +32,20 @@ public class TinyDotScript : MonoBehaviour {
         gameObject.GetComponent<Rigidbody>().mass = size;
         lifeUsed = 0.0f;
         lifeAllowed = Random.Range(minLife, maxLife);
+        m_bringToLifeCounter = 1.5f;
+        m_bringToLifeTriggered = false;
         //Color currentColor = this.gameObject.GetComponent<SpriteRenderer>().color;
         //currentColor.a = 0f;
         //this.gameObject.GetComponent<SpriteRenderer>().color = currentColor;
+    }
 
+    /// <summary>
+    ///  Called by other objects on collision to bring this dot to life on contact.
+    /// </summary>
+    public void BringToLife()
+    {
+        if (this.transform.position.y < m_eventTimer.GetWaterLevel())
+            m_bringToLifeTriggered = true;
     }
 
     // Use this for initialization
@@ -64,10 +76,17 @@ public class TinyDotScript : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
+        if(m_bringToLifeTriggered == true)
+        {
+            m_bringToLifeCounter -= Time.deltaTime;
+            if (m_bringToLifeCounter < 0f)
+                m_waterLevelOffset = 0f;
+        }
 
         if (this.transform.position.y + m_waterLevelOffset < m_eventTimer.GetWaterLevel())
         {
             this.GetComponent<Rigidbody>().isKinematic = false;
+            this.GetComponent<SphereCollider>().enabled = true;
             lifeUsed += Time.deltaTime;
             if(lifeUsed > lifeAllowed - 2f)
             {

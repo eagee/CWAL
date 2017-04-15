@@ -35,55 +35,70 @@ public class JointTracker : MonoBehaviour {
         }
 
         // Use for testing with a single body model to make life easier
-        foreach(Body body in data)
+        //foreach(Body body in data)
+        //{
+        //    if ((body != null) && (body.IsTracked))
+        //    {
+        //        GetComponent<Rigidbody>().isKinematic = true;
+        //        var pos = body.Joints[JointToUse].Position;
+        //        float yPosition = (pos.Y * scale) + (yOffset + (m_trackerDot.transform.position.y - m_trackerStartingY));
+        //        Vector3 targetPosition = new Vector3(pos.X * scale, yOffset + pos.Y * scale, 0f);
+        //        this.transform.position = Vector3.MoveTowards(this.transform.position, targetPosition, Time.deltaTime * 10);
+        //        //this.transform.position = targetPosition;
+        //        
+        //        //Quaternion rotation;
+        //        //rotation.x = body.JointOrientations[JointToUse].Orientation.X;
+        //        //rotation.y = body.JointOrientations[JointToUse].Orientation.Y;
+        //        //rotation.z = body.JointOrientations[JointToUse].Orientation.Z;
+        //        //rotation.w = body.JointOrientations[JointToUse].Orientation.W;
+        //        //transform.rotation = rotation;
+        //
+        //        //Vector3 eulerRotation = rotation.eulerAngles;
+        //        //Vector3 limitedRotation = new Vector3(0f, 0f, -eulerRotation.z);
+        //        //transform.rotation = Quaternion.Euler(limitedRotation);
+        //        ///if(PointToward != null)
+        //        ///{
+        //        ///    var targetPoint = new Vector3(PointToward.transform.position.x, PointToward.transform.position.y, transform.position.z) - transform.position;
+        //        ///    var targetRotation = Quaternion.LookRotation(new Vector3(0f, 0f, -targetPoint.z), Vector3.up);
+        //        ///    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 2.0f);
+        //        ///}
+        //
+        //    }
+        //    else
+        //    {
+        //        GetComponent<Rigidbody>().isKinematic = false;
+        //        var pos = this.transform.position;
+        //        if (pos.y <= -12f)
+        //        {
+        //            pos.y = -12f;
+        //            this.transform.position = pos;
+        //        }
+        //    }
+        //}
+
+        if((data.Length >= BodyNumber) && (data[BodyNumber] != null) && (data[BodyNumber].IsTracked))
         {
-            if ((body != null) && (body.IsTracked))
+            GetComponent<Rigidbody>().isKinematic = true;
+            var pos = data[BodyNumber].Joints[JointToUse].Position;
+            float yPosition = (pos.Y * scale) + (yOffset + (m_trackerDot.transform.position.y - m_trackerStartingY));
+            Vector3 targetPosition = new Vector3(pos.X * scale, yPosition, 0f);
+            //this.transform.position = Vector3.MoveTowards(this.transform.position, targetPosition, Time.deltaTime * 10);
+            this.transform.position = targetPosition;
+        
+            // Try moving to target vector with physics
+            // Vector3 dir = (targetPosition - transform.position).normalized * 5f;
+            // this.GetComponent<Rigidbody>().velocity = dir;
+        }
+        else
+        {
+            GetComponent<Rigidbody>().isKinematic = false;
+            var pos = this.transform.position;
+            if (pos.y <= -12f)
             {
-                GetComponent<Rigidbody>().isKinematic = true;
-                var pos = body.Joints[JointToUse].Position;
-                float yPosition = (pos.Y * scale) + (yOffset + (m_trackerDot.transform.position.y - m_trackerStartingY));
-                Vector3 targetPosition = new Vector3(pos.X * scale, yOffset + pos.Y * scale, pos.Z);
-                //this.transform.position = Vector3.MoveTowards(this.transform.position, targetPosition, Time.deltaTime * 10);
-                this.transform.position = targetPosition;
-                
-                //Quaternion rotation;
-                //rotation.x = body.JointOrientations[JointToUse].Orientation.X;
-                //rotation.y = body.JointOrientations[JointToUse].Orientation.Y;
-                //rotation.z = body.JointOrientations[JointToUse].Orientation.Z;
-                //rotation.w = body.JointOrientations[JointToUse].Orientation.W;
-                //transform.rotation = rotation;
-
-                //Vector3 eulerRotation = rotation.eulerAngles;
-                //Vector3 limitedRotation = new Vector3(0f, 0f, -eulerRotation.z);
-                //transform.rotation = Quaternion.Euler(limitedRotation);
-                ///if(PointToward != null)
-                ///{
-                ///    var targetPoint = new Vector3(PointToward.transform.position.x, PointToward.transform.position.y, transform.position.z) - transform.position;
-                ///    var targetRotation = Quaternion.LookRotation(new Vector3(0f, 0f, -targetPoint.z), Vector3.up);
-                ///    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 2.0f);
-                ///}
-
+                pos.y = -12f;
+                this.transform.position = pos;
             }
         }
-
-        //if((data.Length >= BodyNumber) && (data[BodyNumber] != null) && (data[BodyNumber].IsTracked))
-        //{
-        //    GetComponent<Rigidbody>().isKinematic = true;
-        //    var pos = data[BodyNumber].Joints[JointToUse].Position;
-        //    float yPosition = (pos.Y * scale) + (yOffset + (m_trackerDot.transform.position.y - m_trackerStartingY));
-        //    Vector3 targetPosition = new Vector3(pos.X * scale, yPosition, 0f);
-        //    //this.transform.position = Vector3.MoveTowards(this.transform.position, targetPosition, Time.deltaTime * 10);
-        //    this.transform.position = targetPosition;
-        //
-        //    // Try moving to target vector with physics
-        //    // Vector3 dir = (targetPosition - transform.position).normalized * 5f;
-        //    // this.GetComponent<Rigidbody>().velocity = dir;
-        //}
-        //else
-        //{
-        //    GetComponent<Rigidbody>().isKinematic = false;
-        //    //this.gameObject.transform.position = new Vector3(-30f, 0f, 0f);
-        //}
 
     }
 

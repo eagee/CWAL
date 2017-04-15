@@ -35,6 +35,10 @@ public class EventTimer : MonoBehaviour {
         if(m_waterLevel < EndingWaterLevel)
         {
             m_waterLevel += Time.deltaTime * WaterLevelSpeed;
+            if(m_waterLevel > 4.5)
+            {
+                m_waterLevel += Time.deltaTime * WaterLevelSpeed * 5;
+            }
         }
         
     }
