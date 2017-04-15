@@ -1,8 +1,10 @@
 ﻿Shader "Sprites/IcebergShader" {
     Properties{
+        _Color("Color", Color) = (1,1,1,1)
         _MainTex("Base (RGB)", 2D) = "white" {}
         _BottomLimit("Bottom Limit: World Pos Y", Float) = 10.0
         _TopLimit("Top Limit: World Pos Y", Float) = -10.0
+        _SinOffset("Top Limit: World Pos Y", Float) = 0.0
     }
         SubShader{
         Lighting Off
@@ -25,7 +27,7 @@
         LOD 200
 
         CGPROGRAM
-#pragma surface surf NoLighting
+#pragma surface surf NoLighting alpha
 #include "UnityCG.cginc"
 
         fixed4 LightingNoLighting(SurfaceOutput s, fixed3 lightDir, fixed atten) {
@@ -38,6 +40,8 @@
     sampler2D _MainTex;
     float _BottomLimit;
     float _TopLimit;
+    float _SinOffset;
+    fixed4 _Color;
 
     struct Input {
         float2 uv_MainTex;
@@ -45,18 +49,28 @@
     };
 
     void surf(Input IN, inout SurfaceOutput o) {
-        if (IN.worldPos.y < _BottomLimit )
+        float bottomLimit = sin(IN.worldPos.x + _SinOffset) * 0.1f + _BottomLimit;
+        float topLimit = sin(IN.worldPos.x + _SinOffset) * 0.1f + _TopLimit;
+        float changeAlpha = 0.0f;
+        if (IN.worldPos.y < bottomLimit - 0.75)
         {
             clip(-1);
         }
-        if (IN.worldPos.y > _TopLimit)
+        if (IN.worldPos.y < bottomLimit)
+        {
+            changeAlpha = 1.0f - abs(bottomLimit - 0.75 - IN.worldPos.y);
+        }
+        if (IN.worldPos.y > topLimit)
         {
             clip(-1);
         }
-        //clip((IN.worldPos.y /*Adding a value where this text is will change at what height the sprite will not be rendered*/));
-        half4 c = tex2D(_MainTex, IN.uv_MainTex);
+        // Albedo comes from a texture tinted by color
+        fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
         o.Albedo = c.rgb;
-        o.Alpha = c.a;
+        o.Alpha = c.a - changeAlpha;
+        //half4 c = tex2D(_MainTex, IN.uv_MainTex);
+        //o.Albedo = c.rgb;
+        //o.Alpha = c.a - changeAlpha;
     }
     ENDCG
     }
